@@ -1,0 +1,44 @@
+-   hosts: localhost
+    become: false
+    tasks:
+
+        -   name: install python kubernetes and openshift tools
+            pip:
+                name: kubernetes, openshift
+                state: latest
+
+        -   name: install minishift
+            homebrew_cask:
+                name: minishift
+
+        -   name: start minishift
+            command: "{{ item }}"
+            with_items:
+                - minishift addon enable admin-user
+                - minishift start --vm-driver=virtualbox
+
+        -   name: install openshift cli
+            homebrew:
+                name: openshift-cli
+
+        -   name: enable openshift agent
+            shell: eval $(minishift oc-env)
+
+        -   name: configure openshift cli to work with minishift
+            command: "{{ item }}"
+            with_items:
+                - oc config use-context minishift
+                - oc login -u admin -p admin
+
+        -   name: create openshift project
+            k8s:
+                state: present
+                inline:
+                    kind: ProjectRequest
+                    metadata:
+                        name: ansibletestproject
+                    displayName: Ansible Test Project
+                    description: This project was created using Ansible
+
+        -   name: open minishift console
+            command: minishift console
