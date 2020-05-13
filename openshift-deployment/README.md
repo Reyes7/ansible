@@ -6,7 +6,7 @@ change the command in openshift.yml from:
 ```oc cluster up --public-hostname=your-hostname-or-ip```
 
 ### Execute the following command:
-```ansible-playbook openshift.yml -i hosts.yml -vvvv -K```
+```ansible-playbook openshift.yml -i config/hosts.yml -vvvv --ask-pass -K```
 
 After successful deployment, and logging into the Openshift console using developer account,
 you should see **Ansible Test Project** in the projects section.
