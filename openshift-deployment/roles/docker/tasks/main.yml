@@ -52,10 +52,6 @@
 
 -   name: setup docker insecure registry
     copy:
-        src: ./files/daemon.json
+        src: "{{ role_path }}/files/daemon.json"
         dest: /etc/docker/
-
--   name: restart docker
-    service:
-        name: docker
-        state: restarted
+    notify: restart docker
